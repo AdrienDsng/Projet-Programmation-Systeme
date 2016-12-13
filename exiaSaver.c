@@ -9,9 +9,17 @@
 
 #define SIZE_LOG 20
 
+typedef struct
+{
+	struct tm dateTime;
+	int screenSaver;
+	char args[255];
+} Statttt;
+
 void showStats();
 void getContentStatFile();
 void verifyEnv();
+int isDefEnv(char* varEnvName, char* str, char* defaultValue);
 void writeInFileStat(time_t dateTime, int termSaver, char* args);
 
 
@@ -23,7 +31,8 @@ int *sortPtr = &sort;
 int main(int argc, char* argv[]) {
 	//verifyEnv();
 
-	char* dirHome;
+	char dirHome[255];
+	char strTmp[255];
 	unsigned int random;
 	srand(time(NULL));
 
@@ -41,22 +50,26 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	/*if(getenv("EXIASAVER_HOME") != NULL)
-		strcpy(dirHome, getenv("EXIASAVER_HOME"));
-	else
-		strcpy(dirHome, ".");*/
+	isDefEnv("EXIASAVER_HOME", dirHome, "./");
 
 	random = rand() % 3;
 	random = 0;
 
 	if(random == 0) { //TermSaver static
-		DIR* dir = opendir("termSaver/1");
+		char dirPbm[255];
+		isDefEnv("EXIASAVER1_PBM", dirPbm, "./");
+
+		strcpy(strTmp, dirHome);
+		if(strcmp(strTmp, dirPbm) != 0)
+			strcat(strTmp, dirPbm);
+
+		DIR* dir = opendir(strTmp);
 		struct dirent* file;
 		int count = 0;
 
 		if(dir == NULL) {
-			printf("An error occured while searching for the termSaver static\n");
-			printf("Tried to open %s", "dir");
+			printf("An error occured while searching for the termSaver static file.\n");
+			printf("Tried to open %s\n", strTmp);
 			exit(1);
 		}
 
@@ -68,10 +81,10 @@ int main(int argc, char* argv[]) {
 
 		random = rand() % count + 1;
 
-		dir = opendir("termSaver/1");
+		dir = opendir(strTmp);
 		if(dir == NULL) {
-			printf("An error occured while searching for the termSaver static\n");
-			printf("Tried to open %s\n", "dir");
+			printf("An error occured while searching for the termSaver static file.\n");
+			printf("Tried to open %s\n", strTmp);
 			exit(1);
 		}
 
@@ -83,19 +96,43 @@ int main(int argc, char* argv[]) {
 		}
 		closedir(dir);
 
-		char* arguments[] = {"termSaver/termSaver1", file->d_name, NULL};
+		Statttt statttt;
+		//time_t now ;
+		time_t now;
+		now = time(NULL);
+		//memcpy(&(statttt.dateTime), localtime(&now), sizeof(struct tm));
+		statttt.dateTime = *localtime(&now);
 
-		execv("termSaver/termSaver1", arguments);
+		char* arguments[] = {"termSaver1", file->d_name, NULL};
+
+		strcpy(strTmp, dirHome);
+		execv(strcat(strTmp, "termSaver1"), arguments);
 	}
 	else if(random == 1) { //TermSaver dynamic
-		char* arguments[] = {strcat(dirHome, "termSaver2"), NULL};
+		char* arguments[] = {"termSaver2", NULL};
 
-		execv("termSaver2", arguments);
+		char strTmp[255];
+		strcpy(strTmp, dirHome);
+		execv(strcat(strTmp, "termSaver2"), arguments);
 	}
 	else if(random == 2) { //TermSaver interactif
-		char* arguments[] = {strcat(dirHome, "termSaver3"), "20x20", NULL};
+		int x, y;
+		char tmp[3];
+		char pos[6];
 
-		execv("termSaver3", arguments);;
+		x = rand() % 80;
+		y = rand() % 23;
+		sprintf(pos, "%d", x);
+		sprintf(tmp, "%d", y);
+
+		strcat(pos, "x");
+		strcat(pos, tmp);
+
+		char* arguments[] = {"termSaver3", pos, NULL};
+
+		char strTmp[255];
+		strcpy(strTmp, dirHome);
+		execv(strcat(strTmp, "termSaver3"), arguments);;
 	}
 
 	return 0;
@@ -135,7 +172,7 @@ void getContentStatFile() {
 	if(pid == 0) {																//Si le nouveau processus est le processus fils
 		FILE *file;
 
-		file = fopen("log", "r");												//On ouvre le fichier log
+		file = fopen("historique", "r");										//On ouvre le fichier historique
 
 		if(file == NULL) {														//On vérifie que le fichier c'est bien ouvert
 			printf("An errror occured while opening the statistic file\n");
@@ -157,6 +194,18 @@ void getContentStatFile() {
 	else if(pid > 0) {															//Sinon si le nouveau processus est supérieur à 0
 		wait(NULL);																//On attends la fin du processus fils
 	}
+}
+
+int isDefEnv(char* varEnvName, char* str, char* defaultValue) {
+	if(getenv(varEnvName) != NULL) {
+		strcpy(str, getenv(varEnvName));
+
+		return 1;
+	}
+
+	strcpy(str, defaultValue);
+
+	return 0;
 }
 
 void verifyEnv() {

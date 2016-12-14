@@ -18,9 +18,8 @@ typedef struct
 /**
 *fonction qui lit l'image  
 *@param nomdufichier 	nom du fichier 
-*@param chaine  	 	chaine où on va ecrire les données du fichier lu 
 *@param Taille *taille  structure de int qui va récuperer la taille de l'image lue
-*@return void
+*@return char* 		renvoie un pointeur de chaine de caractére 
 **/
 
 char*  lirePBM(char* nomDuFichier,Taille *taille);

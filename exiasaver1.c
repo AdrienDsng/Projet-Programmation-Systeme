@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
  	char* nomDuFichier = argv[1];  //on assimile le 2éme argument au nom du fichier 	
  	Taille *taille;	
 	taille = malloc(sizeof(Taille*)); // on alloue de la mémoire pour notre structure
-	char image[1920] ;
+	char image[1920];
 	pid_t pid;
 	pid = fork();
 
@@ -25,10 +25,11 @@ int main(int argc, char* argv[])
 	if(pid<0) 						// on retourne en processus pére
 	{
 		wait(NULL);
+		affPBM(image); 					 // transforme les caractéres binaire en caractére ascii
+		center(image,taille);	 		// on utilise la fonction center pour centrer l'image 
+		free(taille); 	
 	}
-	affPBM(image); 					 // transforme les caractéres binaire en caractére ascii
-	center(image,taille);	 		// on utilise la fonction center pour centrer l'image 
-	free(taille); 					//on libére la mémoire de la structure
+					//on libére la mémoire de la structure
  	initscr();						//on initialise le mode curse pour pouvoir utiliser la fonction qui nous sera utile	
 	getchar();						//fonction qui attend que l'utilisateur appuie sur une touche	
 	endwin();						// on quitte le mode curse

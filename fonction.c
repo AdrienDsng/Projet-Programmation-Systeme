@@ -1,35 +1,28 @@
 
 #include "fonction.h"
-void retirerLesBlancs(char* chaines)  
+void retirerLesBlancs(char chaines[],char copy[])  
 {
-	char copy[1920];
-	char* token = NULL;
-	token = strtok(chaines," ");
-	strcpy(copy,token);
-	
-	while (token != NULL)
+	int i = 0, l = 0, lg; 
+	lg = strlen(chaines);	// on calcule la longeur de la chaine 
+	while(i<lg)				// tant que on a pas atteint le dernier terme de la chaine on  écrit tout les caractéres qui ne sont pas des espaces.
 	{
-	
-		
-		strcat(copy,token);
-		token = strtok(NULL," ");
-					
-		
-		
-
+		if(chaines[i] !=  ' '  )  // cette boucle parcour la chaine et dés quelle rencontre un blanc elle le met dans une autre chaine
+		{
+			copy[l] = chaines[i];
+			l++;
+		}
+		i++;
 	}
-	
-	strcpy(chaines,copy);				//on assimille tout les caractéres dans cette chaine a du vide on enlève donc tout les blancs
+	copy = '\0';				//on assimille tout les caractéres dans cette chaine a du vide on enlève donc tout les blancs
 }
 
- char* lirePBM(char* nomDuFichier, Taille *taille)
+void lirePBM(char* nomDuFichier, char* chaine, Taille *taille)
 {
 	FILE* file; 				
 	char strTmp[70];
 	char* token;
 	int x = 0, y = 0, lg = 0;
 	file = fopen(nomDuFichier, "r"); //on ouvre le fichier demander
-
 	
 	int height = 0;
 	int width = 0;
@@ -51,44 +44,29 @@ void retirerLesBlancs(char* chaines)
 	width = atoi(token)  ;		//on met la taille dans un int en utilisant une fonction transformant un char en int 
 	token = strtok(NULL, " \n");// on récupére la deuxieme taille 
 	height = atoi(token)  ;			//on met la taille dans un int  (même procédés qu'aux dessus)
-	char image [height*width + height];	
-	char copie[height*width + height];
-	int nbc = height*width + height;
-	char* im = NULL;
-	im = malloc(nbc*sizeof(char));
-
+		
+	char copy[1920];
+	char copie[1920];
 	while (fgets(copie, 70, file) != NULL)	//on lit l'intégralité de ce qui reste du fichier 
 	{		
 			if ( x < 1)						//on remplace une fois la chaine en paramétre par la chaine lu 
 			{
-				//printf("%s",copie);	
-				retirerLesBlancs(copie);//on enléve les blancs dans cette chaîne
-				//printf("%s",copie);
-				strcpy(image,copie);
-				//printf("%s",image); 
-				
+				strcpy(chaine,copy);		
+				retirerLesBlancs(copie,copy);//on enléve les blancs dans cette chaîne 
 				x++;
 			}
 			else
-			{		
-			
-				retirerLesBlancs(copie);	//on enléve les blancs dans cette chaîne
-				//printf("%s",copie);
-				strcat(image,copie);           	//ensuite on fusionne la chaine de caractére lu avec la chaine de caractére en paramétre 
-				//printf("%s",image);
+			{			
+			strcat(chaine,copy);           	//ensuite on fusionne la chaine de caractére lu avec la chaine de caractére en paramétre 
+			retirerLesBlancs(copie,copy);	//on enléve les blancs dans cette chaîne
 			}		
 	}
-
 	fclose(file);
-	strcpy(im,image);
+	
 	taille->width = width; 				// on donne a la structure la valeur de la taille lu
-	taille->height = height;			// on donne a la structure la valeur de la taille lu
-	
-	
-
-	return im;
-	free(im);
+	taille->height = height;			// on donne a la structure la valeur de la taille lu	
 }
+
 
 void affPBM(char* chaine)
 {

@@ -5,24 +5,24 @@
 #include <sys/ioctl.h> 
 #include <unistd.h> 
 #include <sys/wait.h>
-
 /**stucture
 *taille de l'image
 **/
 typedef struct 
 {
-	int width; /*<largeur*/
-	int height;/*<hauteur*/
+	int width; 
+	int height;
 } Taille;
 
 /**
 *fonction qui lit l'image  
 *@param nomdufichier 	nom du fichier 
+*@param chaine  	 	chaine où on va ecrire les données du fichier lu 
 *@param Taille *taille  structure de int qui va récuperer la taille de l'image lue
-*@return char* 		renvoie un pointeur de chaine de caractére 
+*@return void
 **/
 
-char*  lirePBM(char* nomDuFichier,Taille *taille);
+void  lirePBM(char* nomDuFichier, char* chaine,Taille *taille);
   
 /**
 *permet de retirer les espaces dans une chaîne 
@@ -31,7 +31,7 @@ char*  lirePBM(char* nomDuFichier,Taille *taille);
 *@return void 
 **/
 
-void retirerLesBlancs(char* chaines);
+void retirerLesBlancs(char chaines[],char copy[]);
 
 /**
 permet de changer certain caractéres reçu en caractére ascii
@@ -45,5 +45,4 @@ void affPBM(char* chaine);
  *@param	taille 		taille de l'image
  *@return void
  **/
-
 void center (char* text,Taille *taille);

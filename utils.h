@@ -11,8 +11,8 @@ int isDefEnv(char* varEnvName, char* str, char* defaultValue);
 **/
 typedef struct 
 {
-	int width; 
-	int height;
+	int width; /*<largeur*/
+	int height;/*<hauteur*/
 } Taille;
 
 /**

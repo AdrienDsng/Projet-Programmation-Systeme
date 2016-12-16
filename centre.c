@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 
-void center (char* text/*, Taille *taille*/) //fonctione permettant de centrer une chaine de caractère dans la console.
+void center (char* text, Taille *taille) //fonction permettant de centrer une chaine de caractère dans la console.
 {
 	struct winsize w; //structure de la librairie 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w); //appel système d'entrée-sortie 
@@ -13,8 +13,8 @@ void center (char* text/*, Taille *taille*/) //fonctione permettant de centrer u
 	int hauteurCsl = w.ws_row; //variable du nombre de lignes de la console, sa hauteur
 	unsigned int n = 0, i = 0, j = 0;	// Variables utilisées dans les boucles for.
 
-	int height = 5; //variable de hauteur de l'image
-	int width = 5;	//variable de largeur de l'image 
+	int height; //variable de hauteur de l'image
+	int width ;	//variable de largeur de l'image 
 
 	system("clear"); //vide la console
 
@@ -45,11 +45,3 @@ void center (char* text/*, Taille *taille*/) //fonctione permettant de centrer u
 		putchar('\n');
 	}
 }
-
-
-int main () 
-{
-	center("test\ntest1\ntest2"); //Test de la fonction sur trois lignes.
-}
-
-
